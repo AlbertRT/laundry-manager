@@ -61,7 +61,9 @@ const BreadCrumbItem = ({ pathnames, pathname, index }: BreadcrumbItem) => {
 				</>
 			) : (
 				<BreadcrumbLink asChild>
-					<span className={"cursor-default"}>
+					<span
+						className={"cursor-default text-black hover:text-black"}
+					>
 						{pathname.charAt(0).toUpperCase() + pathname.slice(1)}
 					</span>
 				</BreadcrumbLink>

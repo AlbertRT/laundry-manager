@@ -1,60 +1,103 @@
-'use client'
-
+"use client";
+import { usePathname } from "next/navigation";
+import classes from "@/styles/Navbar.module.css";
+import {
+	IconHome2,
+	IconReceipt,
+	IconUsers,
+	IconPackage,
+	IconLogout,
+	IconSwitchHorizontal,
+} from "@tabler/icons-react";
+import { Center, Tooltip, UnstyledButton, Stack, rem } from "@mantine/core";
+import { useState } from "react";
 import Link from "next/link";
-import {Box, Home, Package2, Users} from "lucide-react";
-import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
-import {usePathname} from "next/navigation";
-import {cn} from "@/lib/utils";
 
 const sidebarLinks = [
-    {
-        label: "Dashboard",
-        href: "/",
-        icon: () => <Home className="h-4 w-4"/>
-    },
-    {
-        label: "Orders",
-        href: "/orders",
-        icon: () => <Box className="h-4 w-4"/>
-    },
-    {
-        label: "Customers",
-        href: "/customers",
-        icon: () => <Users className="h-4 w-4"/>
-    }
-]
+	{
+		label: "Dashboard",
+		href: "/",
+		icon: IconHome2,
+	},
+	{
+		label: "Orders",
+		href: "/orders",
+		icon: IconReceipt,
+	},
+	{
+		label: "Customers",
+		href: "/customers",
+		icon: IconUsers,
+	},
+	{
+		label: "Services",
+		href: "/services",
+		icon: IconPackage,
+	},
+];
 
+type NavbarLinkProps = {
+	icon: typeof IconHome2;
+	label: string;
+	active?: boolean;
+	onClick?(): void;
+	href: string;
+};
+
+function NavbarLink({
+	icon: Icon,
+	label,
+	active,
+	onClick,
+	href,
+}: NavbarLinkProps) {
+	return (
+		<Tooltip
+			label={label}
+			position="right"
+			transitionProps={{ duration: 0 }}
+		>
+			<Link
+				onClick={onClick}
+				className={classes.link}
+				data-active={active || undefined}
+				href={href}
+			>
+				<Icon
+					style={{ width: rem(20), height: rem(20) }}
+					stroke={1.5}
+				/>
+			</Link>
+		</Tooltip>
+	);
+}
 
 export default function Sidebar() {
+	const pathname = usePathname();
+	const [active, setActive] = useState(2);
 
-    const pathname = usePathname()
+	const links = sidebarLinks.map((link, index) => (
+		<NavbarLink
+			{...link}
+			key={link.label}
+			active={index === active}
+			href={link.href}
+			onClick={() => setActive(index)}
+		/>
+	));
 
-    return <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
-        <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
-            <Link
-                href="/"
-                className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
-            >
-                <Package2 className="h-4 w-4 transition-all group-hover:scale-110"/>
-                <span className="sr-only">Acme Inc</span>
-            </Link>
-            <TooltipProvider>
-                {sidebarLinks.map((link, i) => (
-                    <Tooltip key={i}>
-                        <TooltipTrigger asChild>
-                            <Link
-                                href={link.href}
-                                className={cn("flex h-9 w-9 items-center justify-center rounded-lg  transition-colors hover:text-foreground md:h-8 md:w-8", pathname === link.href ? "bg-primary-foreground text-primary" : "text-muted-foreground")}
-                            >
-                                {link.icon()}
-                                <span className="sr-only">{link.label}</span>
-                            </Link>
-                        </TooltipTrigger>
-                        <TooltipContent side="right">{link.label}</TooltipContent>
-                    </Tooltip>
-                ))}
+	return (
+		<nav className={classes.navbar}>
+			<Center>
+				{/* <MantineLogo type="mark" size={30} /> */}
+				<div>logo</div>
+			</Center>
 
-            </TooltipProvider>
-        </nav>
-    </aside>
+			<div className={classes.navbarMain}>
+				<Stack justify="center" gap={0}>
+					{links}
+				</Stack>
+			</div>
+		</nav>
+	);
 }

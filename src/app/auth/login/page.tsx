@@ -1,39 +1,46 @@
-import Link from "next/link"
-
-import { Button } from "@/components/ui/button"
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-    CardFooter
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+	TextInput,
+	PasswordInput,
+	Checkbox,
+	Anchor,
+	Paper,
+	Title,
+	Text,
+	Container,
+	Group,
+	Button,
+} from "@mantine/core";
+import classes from "@/styles/AuthLogin.module.css";
 
 export default function page() {
-    return (
-        <Card className="w-full max-w-sm">
-            <CardHeader>
-                <CardTitle className="text-2xl">Login</CardTitle>
-                <CardDescription>
-                    Enter your email below to login to your account.
-                </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4">
-                <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="m@example.com" required autoComplete={"off"} />
-                </div>
-                <div className="grid gap-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input id="password" type="password" required />
-                </div>
-            </CardContent>
-            <CardFooter>
-                <Button className="w-full">Sign in</Button>
-            </CardFooter>
-        </Card>
-    )
+	return (
+		<Container size={420} my={40}>
+			<Title ta="center" className={classes.title}>
+				Welcome back!
+			</Title>
+
+			<Paper withBorder shadow="md" p={30} mt={30} radius="md">
+				<TextInput
+					label="Email"
+					placeholder="you@mantine.dev"
+					required
+				/>
+				<PasswordInput
+					label="Password"
+					placeholder="Your password"
+					required
+					mt="md"
+				/>
+				<Group justify="space-between" mt="lg">
+					<Checkbox label="Remember me" />
+					<Anchor component="button" size="sm">
+						Forgot password?
+					</Anchor>
+				</Group>
+				<Button fullWidth mt="xl">
+					Sign in
+				</Button>
+			</Paper>
+		</Container>
+	);
 }
