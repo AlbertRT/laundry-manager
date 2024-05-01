@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Sidebar from "@/components/Navigation/Sidebar";
-import "@mantine/core/styles.css";
-import { MantineProvider } from "@mantine/core";
-import className from "@/styles/RootLayout.module.css";
+import "@/styles/globals.css";
 
 export const metadata: Metadata = {
 	title: "Acme Laundry Service",
@@ -16,13 +14,11 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body>
-				<MantineProvider>
-					<div id={className.layout_Root}>
-						<Sidebar />
-						<div className={className.child}>{children}</div>
-					</div>
-				</MantineProvider>
+			<body className="font-workSans">
+				<div className="flex">
+					<Sidebar />
+					<div>{children}</div>
+				</div>
 			</body>
 		</html>
 	);
