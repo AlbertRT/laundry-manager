@@ -15,9 +15,9 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className="font-workSans">
-				<div className="flex">
+				<div className="flex w-full min-h-screen">
 					<Sidebar />
-					<div>{children}</div>
+					<div className="w-full">{children}</div>
 				</div>
 			</body>
 		</html>

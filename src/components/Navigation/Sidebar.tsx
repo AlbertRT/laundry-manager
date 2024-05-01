@@ -78,8 +78,8 @@ export default function Sidebar() {
 	return (
 		<div
 			className={clsx(
-				"bg-gray-100 min-h-screen relative transition-width py-5 transition-spacing",
-				isOpen ? "w-[5%] px-3" : "w-1/4 px-5"
+				"bg-gray-100 min-h-screen relative py-5 transition-width",
+				isOpen ? "w-16 px-3" : "w-1/4 px-5"
 			)}
 		>
 			<div className="mb-4">
@@ -91,7 +91,7 @@ export default function Sidebar() {
 					<Input
 						placeholder="Search..."
 						leftContent={<IconSearch className="w-4 h-4" />}
-						rightContent={<Kbd>ctrl + k</Kbd>}
+						rightContent={<Kbd keybinds="ctrl + k" />}
 						ref={searchInputRef}
 					/>
 				)}

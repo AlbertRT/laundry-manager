@@ -1,3 +1,5 @@
+import React from "react";
+
 export type LaundryService = {
 	id: string;
 	name: string;
@@ -24,5 +26,24 @@ export interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {
 }
 
 export type KbdProps = {
-	children: React.ReactNode;
+	keybinds?: string;
 };
+
+export interface TableProps extends React.ComponentPropsWithRef<"table"> {
+	children?: React.ReactNode;
+}
+export interface TableHeader extends React.ComponentPropsWithRef<"thead"> {
+	children?: React.ReactNode;
+}
+export interface TableHead extends React.ComponentPropsWithRef<"th"> {
+	children?: React.ReactNode;
+}
+export interface TableRow extends React.ComponentPropsWithRef<"tr"> {
+	children?: React.ReactNode;
+}
+export interface TableBody extends React.ComponentPropsWithRef<"tbody"> {
+	children?: React.ReactNode;
+}
+export interface TableData extends React.ComponentPropsWithRef<"td"> {
+	children?: React.ReactNode;
+}

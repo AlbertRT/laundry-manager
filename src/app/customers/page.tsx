@@ -1,45 +1,13 @@
 import Image from "next/image";
 import { BookUser, MoreHorizontal } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
 import { getCustomersDetail } from "@/actions/customers/customers.action";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 export default async function page() {
 	const customers = await getCustomersDetail();
 
 	return (
 		<div className="px-8">
-			<Card>
+			{/* <Card>
 				<CardHeader>
 					<CardTitle>Customers</CardTitle>
 					<CardDescription>
@@ -128,7 +96,7 @@ export default async function page() {
 					</Table>
 				</CardContent>
 				<CardFooter></CardFooter>
-			</Card>
+			</Card> */}
 		</div>
 	);
 }
