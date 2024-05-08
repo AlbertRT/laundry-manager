@@ -1,15 +1,17 @@
 "use client";
-import { formatDate } from "@/lib/utils";
 import { formatCurrency } from "@/lib/formater";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
 	Table,
 	TableBody,
-	TableData,
+	TableCell,
 	TableHead,
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 type OrderType = {
 	id: string;
@@ -29,29 +31,12 @@ type OrderType = {
 
 export function OrderTable({ orders }: { orders: OrderType }) {
 	const router = useRouter();
+	const param = useSearchParams().get("orderId");
 
 	const getOrderDetails = (orderId: string) => {
-		return router.push(`/orders/?orderId=${orderId}`);
+		return router.push(`/orders?orderId=${orderId}`);
 	};
 
-	// return <Table>
-	//     <TableHeader>
-	//         <TableRow>
-	//             <TableHead>Customer</TableHead>
-	//             <TableHead className="hidden sm:table-cell">
-	//                 Service
-	//             </TableHead>
-	//             <TableHead className="hidden sm:table-cell">
-	//                 Status
-	//             </TableHead>
-	//             <TableHead className="hidden md:table-cell">
-	//                 Date
-	//             </TableHead>
-	//             <TableHead className="text-right">Amount</TableHead>
-	//         </TableRow>
-	//     </TableHeader>
-
-	// </Table>
 	return (
 		<Table>
 			<TableHeader>
@@ -68,23 +53,32 @@ export function OrderTable({ orders }: { orders: OrderType }) {
 					<TableRow
 						key={order.id}
 						onClick={() => getOrderDetails(order.id)}
+						className={cn(
+							"cursor-pointer",
+							param === order.id && "bg-accent"
+						)}
 					>
-						<TableData>
+						<TableCell>
 							<div className="font-medium">
 								{order.customer.fullname}
 							</div>
 							<div className="hidden text-sm text-muted-foreground md:inline">
 								{order.customer.email}
 							</div>
-						</TableData>
-						<TableData>{order.service}</TableData>
-						<TableData>
-							{/* <Badge className="text-xs" variant="onProgress">
+						</TableCell>
+						<TableCell>{order.service}</TableCell>
+						<TableCell>
+							<Badge
+								className="text-xs cursor-default"
+								variant="default"
+							>
 								{order.status}
-							</Badge> */}
-						</TableData>
-						<TableData>{formatDate(order.date)}</TableData>
-						<TableData>{formatCurrency(order.subtotal)}</TableData>
+							</Badge>
+						</TableCell>
+						<TableCell>
+							{format(new Date(order.date), "dd MMMM yyyy")}
+						</TableCell>
+						<TableCell>{formatCurrency(order.subtotal)}</TableCell>
 					</TableRow>
 				))}
 			</TableBody>

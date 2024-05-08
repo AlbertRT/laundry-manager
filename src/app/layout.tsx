@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import Sidebar from "@/components/Navigation/Sidebar";
 import "@/styles/globals.css";
+import Nav from "@/components/Navigation/Nav";
+import Head from "@/components/Navigation/Head/Head";
 
 export const metadata: Metadata = {
 	title: "Acme Laundry Service",
@@ -15,10 +16,15 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className="font-workSans">
-				<div className="flex w-full min-h-screen">
-					<Sidebar />
-					<div className="w-full">{children}</div>
-				</div>
+				<main className="bg-primary-foreground h-[calc(100vh-56px)]">
+					<Head />
+					<div className="flex w-full h-full">
+						<Nav />
+						<div className="w-full overflow-auto max-h-screen">
+							{children}
+						</div>
+					</div>
+				</main>
 			</body>
 		</html>
 	);

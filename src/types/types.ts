@@ -13,37 +13,40 @@ export type PaymentMethod = {
 	provider: string;
 };
 
-export interface InputProps extends React.ComponentPropsWithRef<"input"> {
-	leftContent?: React.ReactNode;
-	rightContent?: React.ReactNode;
-}
+export type OrderType =
+	| {
+			id: string;
+			service: string;
+			status: string;
+			payment: string;
+			date: Date;
+			subtotal: number;
+			quantity: number;
+			tax: number;
+			total: number;
+			customer: {
+				id: string;
+				fullname: string;
+				email: string;
+				phone: string;
+				address: string;
+			};
+			updatedAt: Date;
+	  }
+	| undefined;
 
-export interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {
-	children?: React.ReactNode;
-	loading?: boolean;
-	loadingPlaceholder?: string;
-	isIcon?: boolean;
-}
-
-export type KbdProps = {
-	keybinds?: string;
+export type OrderCartType = {
+	serviceId: string;
+	name: string;
+	quantity: number;
+	price: number;
+	defaultPrice: number;
+	unit?: string;
 };
 
-export interface TableProps extends React.ComponentPropsWithRef<"table"> {
-	children?: React.ReactNode;
-}
-export interface TableHeader extends React.ComponentPropsWithRef<"thead"> {
-	children?: React.ReactNode;
-}
-export interface TableHead extends React.ComponentPropsWithRef<"th"> {
-	children?: React.ReactNode;
-}
-export interface TableRow extends React.ComponentPropsWithRef<"tr"> {
-	children?: React.ReactNode;
-}
-export interface TableBody extends React.ComponentPropsWithRef<"tbody"> {
-	children?: React.ReactNode;
-}
-export interface TableData extends React.ComponentPropsWithRef<"td"> {
-	children?: React.ReactNode;
-}
+export type CustomerDataType = {
+	customerName: string;
+	email: string;
+	phone: string;
+	address: string;
+};
