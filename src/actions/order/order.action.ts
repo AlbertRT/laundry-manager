@@ -4,100 +4,78 @@ import { date, z } from "zod";
 import db from "@/db/db";
 import { redirect, RedirectType } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { isMoreThan48Hour } from "@/lib/utils";
+import {
+	generateInvoiceNumber,
+	generateOrderId,
+	generateRandomLetters,
+	isMoreThan48Hour,
+} from "@/lib/utils";
 import { CustomerDataType, OrderCartType } from "@/types/types";
 
-const createOrderSchema = z.object({
-	id: z.string().min(1),
-	customerName: z.string().min(1),
-	email: z.string().min(1),
-	phone: z.string().min(1),
-	address: z.string().min(1),
-	service: z.string().min(1),
-	subtotal: z.coerce.number().int().min(1),
-	tax: z.coerce.number().int().min(1),
-	total: z.coerce.number().int().min(1),
-	payment: z.string().min(1),
-});
+interface OrderData extends OrderCartType {
+	subtotal: number;
+	tax: number;
+	total: number;
+}
 
 export async function createOrder(data: {
 	order: OrderCartType[];
 	customer: CustomerDataType;
 }) {
-	console.log(data);
+	// pricing
 
-	// try {
-	// 	const laundryServiceData = await db.service.findFirst({
-	// 		where: {
-	// 			name: formData.get("service") as string,
-	// 		},
-	// 	});
-	// 	const paymentData = await db.payment.findFirst({
-	// 		where: {
-	// 			name: formData.get("payment") as string,
-	// 		},
-	// 	});
+	const subtotal: number = data.order.reduce(
+		(total, item) => total + item.price,
+		0
+	);
+	const tax: number = subtotal * 0.1;
+	const customerId = generateRandomLetters(8);
+	const invNumb = generateInvoiceNumber();
+	const orderId = generateOrderId();
 
-	// 	if (!laundryServiceData || !paymentData)
-	// 		throw new Error("Something went wrong");
+	try {
+		await db.order.create({
+			data: {
+				id: orderId,
+				inv: invNumb,
+				subtotal,
+				tax,
+				total: subtotal + tax,
+				payment: "Cash",
+				customer: {
+					connectOrCreate: {
+						where: { email: data.customer.email },
+						create: {
+							id: customerId,
+							fullname: data.customer.customerName,
+							email: data.customer.email,
+							phone: data.customer.phone,
+							address: data.customer.address,
+						},
+					},
+				},
+			},
+		});
 
-	// 	const subtotal =
-	// 		Number(formData.get("quantity")) * laundryServiceData.price;
-	// 	const tax = (10 / 100) * subtotal;
+		for (const item of data.order) {
+			await db.orderItem.create({
+				data: {
+					orderId,
+					serviceId: item.serviceId,
+					name: item.name,
+					price: item.price,
+					defaultPrice: item.defaultPrice,
+					quantity: item.quantity,
+					unit: item.unit as string,
+				},
+			});
+		}
+	} catch (error) {
+		console.log(error);
+	}
 
-	// 	const raw = {
-	// 		// id: generateID(),
-	// 		customerName: formData.get("customerName") as string,
-	// 		service: formData.get("service") as string,
-	// 		email: formData.get("email") as string,
-	// 		phone: formData.get("phone") as string,
-	// 		address: formData.get("address") as string,
-	// 		subtotal,
-	// 		tax,
-	// 		total: subtotal + tax,
-	// 		payment: formData.get("payment") as string,
-	// 	};
-
-	// 	const result = createOrderSchema.safeParse(raw);
-
-	// 	if (!result.success) {
-	// 		console.log(result.error);
-
-	// 		return result.error.formErrors.fieldErrors;
-	// 	}
-
-	// 	const { id, payment, customerName, service, email, phone, address } =
-	// 		result.data;
-
-	// 	await db.order.create({
-	// 		data: {
-	// 			id,
-	// 			service,
-	// 			subtotal,
-	// 			tax,
-	// 			total: subtotal + tax,
-	// 			payment,
-	// 			quantity: Number(formData.get("quantity")),
-	// 			customer: {
-	// 				connectOrCreate: {
-	// 					where: {
-	// 						email,
-	// 					},
-	// 					create: {
-	// 						fullname: customerName,
-	// 						email,
-	// 						phone,
-	// 						address,
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	});
-	// } catch (error) {
-	// 	console.log(error);
-	// }
-	// revalidatePath("/orders");
-	// redirect("/orders", RedirectType.push);
+	revalidatePath("/orders");
+	redirect("/orders", RedirectType.push);
 }
 
 export async function getOrderById(id: string) {
@@ -107,16 +85,16 @@ export async function getOrderById(id: string) {
 		where: { id },
 		select: {
 			id: true,
+			inv: true,
 			customer: true,
 			payment: true,
-			service: true,
 			subtotal: true,
 			total: true,
 			tax: true,
 			date: true,
-			quantity: true,
 			status: true,
 			updatedAt: true,
+			orderItems: true,
 		},
 	});
 

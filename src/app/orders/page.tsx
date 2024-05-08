@@ -9,7 +9,6 @@ async function getOrder() {
 		select: {
 			id: true,
 			customer: true,
-			service: true,
 			date: true,
 			status: true,
 			subtotal: true,

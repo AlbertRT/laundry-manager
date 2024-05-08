@@ -16,14 +16,14 @@ export type PaymentMethod = {
 export type OrderType =
 	| {
 			id: string;
-			service: string;
+			inv: string;
 			status: string;
 			payment: string;
 			date: Date;
 			subtotal: number;
-			quantity: number;
 			tax: number;
 			total: number;
+			updatedAt: Date;
 			customer: {
 				id: string;
 				fullname: string;
@@ -31,9 +31,13 @@ export type OrderType =
 				phone: string;
 				address: string;
 			};
-			updatedAt: Date;
+			orderItems: IOrderItem[];
 	  }
 	| undefined;
+
+export interface IOrderItem extends OrderCartType {
+	orderId: string;
+}
 
 export type OrderCartType = {
 	serviceId: string;

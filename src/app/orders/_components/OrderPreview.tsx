@@ -62,7 +62,10 @@ export default function OrderPreview({ order, customerData }: OrderPrevComp) {
 	};
 
 	const onSubmit = async (): Promise<void> => {
-		await createOrder({ order: orderCart, customer: customerData });
+		await createOrder({
+			order: orderCart,
+			customer: customerData,
+		});
 	};
 
 	return (

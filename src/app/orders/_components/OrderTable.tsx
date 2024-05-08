@@ -12,10 +12,17 @@ import {
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { IconDots, IconFileTypePdf, IconPdf } from "@tabler/icons-react";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type OrderType = {
 	id: string;
-	service: string;
 	status: string;
 	payment: string;
 	date: Date;
@@ -42,17 +49,18 @@ export function OrderTable({ orders }: { orders: OrderType }) {
 			<TableHeader>
 				<TableRow>
 					<TableHead>Customer</TableHead>
-					<TableHead>Service</TableHead>
 					<TableHead>Status</TableHead>
 					<TableHead>Date</TableHead>
 					<TableHead>Amount</TableHead>
+					<TableHead>
+						<span className="sr-only">Action</span>
+					</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
 				{orders.map((order) => (
 					<TableRow
 						key={order.id}
-						onClick={() => getOrderDetails(order.id)}
 						className={cn(
 							"cursor-pointer",
 							param === order.id && "bg-accent"
@@ -66,7 +74,6 @@ export function OrderTable({ orders }: { orders: OrderType }) {
 								{order.customer.email}
 							</div>
 						</TableCell>
-						<TableCell>{order.service}</TableCell>
 						<TableCell>
 							<Badge
 								className="text-xs cursor-default"
@@ -79,6 +86,27 @@ export function OrderTable({ orders }: { orders: OrderType }) {
 							{format(new Date(order.date), "dd MMMM yyyy")}
 						</TableCell>
 						<TableCell>{formatCurrency(order.subtotal)}</TableCell>
+						<TableCell>
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button size={"icon"} variant={"ghost"}>
+											<IconFileTypePdf className="w-4 h-4" />
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent>
+										Export to PDF
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
+							<Button
+								size={"icon"}
+								variant={"ghost"}
+								onClick={() => getOrderDetails(order.id)}
+							>
+								<IconDots className="w-4 h-4" />
+							</Button>
+						</TableCell>
 					</TableRow>
 				))}
 			</TableBody>

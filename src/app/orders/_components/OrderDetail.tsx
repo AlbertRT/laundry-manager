@@ -16,15 +16,28 @@ import {
 import { formatCurrency } from "@/lib/formater";
 import { OrderType } from "@/types/types";
 import { IconTrash, IconX } from "@tabler/icons-react";
-import { format } from "date-fns";
+import { format, formatDate } from "date-fns";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 
 export default function OrderDetail() {
 	const orderId = useSearchParams().get("orderId");
 	const router = useRouter();
-	const [orderData, setOrderData] = useState<OrderType | null>(null);
+	const [orderData, setOrderData] = useState<OrderType>(undefined);
 
 	useEffect(() => {
 		(async () => {
@@ -32,93 +45,97 @@ export default function OrderDetail() {
 			setOrderData(data);
 		})();
 
-		return () => setOrderData(null);
+		return () => setOrderData(undefined);
 	}, [orderId]);
 
 	const onClose = (): void => {
-		setOrderData(null);
+		setOrderData(undefined);
 		router.push("/orders");
 	};
 
 	return (
 		orderId &&
 		orderData && (
-			<div className="w-[45%] border-[1px] rounded">
-				<div className="w-full flex justify-between bg-muted p-5">
-					<div className="block">
-						<div className="flex items-center space-x-3">
-							<p className="font-bold select-none">
-								{orderData.id}
-							</p>
-							<Badge className="cursor-default">
-								{orderData.status}
-							</Badge>
+			<Card className="w-[45%]">
+				<CardHeader className="bg-muted">
+					<CardTitle className="text-lg flex items-center justify-between">
+						<span className="font-bold select-none">
+							{orderData.inv}
+						</span>
+						<div className="flex space-x-3">
+							<DeleteData orderId={orderData.id} />
+							<div
+								className="w-6 h-6 flex items-center cursor-pointer justify-center"
+								onClick={onClose}
+							>
+								<IconX className="w-4 h-4" />
+							</div>
 						</div>
-						<p className="text-muted-foreground text-sm">
-							{format(new Date(orderData.date), "dd MMMM yyyy")}
-						</p>
-					</div>
-					<div className="flex space-x-3">
-						<DeleteData orderId={orderData.id} />
-						<div
-							className="w-6 h-6 flex items-center cursor-pointer justify-center"
-							onClick={onClose}
-						>
-							<IconX className="w-4 h-4" />
+					</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<div className="mt-5 space-y-4">
+						<div className="text-sm space-y-3 border-b-[1px] pb-4">
+							<p className="font-bold">Order Detail</p>
+							<div className="space-y-1">
+								{orderData.orderItems.map((item, index) => (
+									<div
+										className="grid grid-cols-3"
+										key={index}
+									>
+										<p className="text-muted-foreground text-start">
+											{item.name}
+										</p>
+										<p className="text-end">
+											{item.quantity} {item.unit}
+										</p>
+										<p className="text-end">
+											{formatCurrency(item.defaultPrice)}
+										</p>
+									</div>
+								))}
+							</div>
 						</div>
-					</div>
-				</div>
-				<div className="p-5 space-y-4">
-					<div className="text-sm space-y-3 border-b-[1px] pb-4">
-						<p className="font-bold">Order Detail</p>
-						<div className="flex justify-between text-muted-foreground">
-							<p>
-								{orderData.service} ({orderData.quantity}x)
-							</p>
-							<p>{formatCurrency(orderData.subtotal)}</p>
-						</div>
-					</div>
-					<div className="text-sm space-y-3 border-b-[1px] pb-4">
-						<div className="flex justify-between">
-							<p className="text-muted-foreground">Subtotal</p>
-							<p>{formatCurrency(orderData.subtotal)}</p>
-						</div>
-						<div className="flex justify-between">
-							<p className="text-muted-foreground">Tax</p>
-							<p>{formatCurrency(orderData.tax)}</p>
-						</div>
-						<div className="flex justify-between">
-							<p className="text-muted-foreground">Payment</p>
-							<p className="italic">{orderData.payment}</p>
-						</div>
-						<div className="flex justify-between font-bold">
-							<p className="text-muted-foreground">Total</p>
-							<p>{formatCurrency(orderData.total)}</p>
-						</div>
-					</div>
-					<div className="text-sm space-y-3 pb-4">
-						<p className="font-bold">Customer Detail</p>
-						<div className="flex justify-between">
-							<p className="text-muted-foreground">Name</p>
-							<p className="font-bold">
-								{orderData.customer.fullname}
-							</p>
-						</div>
-						<div className="flex justify-between">
-							<p className="text-muted-foreground">Email</p>
-							<p className="font-bold">
-								{orderData.customer.email}
-							</p>
-						</div>
-						<div className="flex justify-between">
-							<p className="text-muted-foreground">Phone</p>
-							<p className="font-bold">
-								{orderData.customer.phone}
-							</p>
+						<div className="text-sm space-y-3">
+							<div className="grid grid-cols-2 w-full">
+								<p className="text-muted-foreground">
+									Subtotal
+								</p>
+								<p className="text-end">
+									{formatCurrency(orderData.subtotal)}
+								</p>
+							</div>
+							<div className="grid grid-cols-2 w-full">
+								<p className="text-muted-foreground">Tax</p>
+								<p className="text-end">
+									{formatCurrency(orderData.tax)}
+								</p>
+							</div>
+							<div className="grid grid-cols-2 w-full">
+								<p className="text-muted-foreground">Payment</p>
+								<p className="italic text-end">
+									{orderData.payment}
+								</p>
+							</div>
+							<div className="grid grid-cols-2 w-full font-bold">
+								<p className="text-muted-foreground">Total</p>
+								<p className="text-end">
+									{formatCurrency(orderData.total)}
+								</p>
+							</div>
 						</div>
 					</div>
-				</div>
-			</div>
+				</CardContent>
+				<CardFooter className="bg-muted py-4 select-none text-xs text-muted-foreground">
+					<span>
+						Created at{" "}
+						{formatDate(
+							new Date(orderData.date),
+							"dd MMMM yyyy hh:MM:ss"
+						)}
+					</span>
+				</CardFooter>
+			</Card>
 		)
 	);
 }
