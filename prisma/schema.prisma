@@ -36,8 +36,8 @@ model Order {
 
 model OrderItem {
     id           String @id @default(uuid())
-    order        Order  @relation(fields: [orderId], references: [id])
-    orderId      String @unique
+    order        Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+    orderId      String
     serviceId    String
     name         String
     price        Int

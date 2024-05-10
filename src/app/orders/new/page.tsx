@@ -107,6 +107,7 @@ export default function page() {
 								type="text"
 								name="phone"
 								placeholder="Phone Number"
+								autoComplete="off"
 								onChange={onCustomerDataInput}
 							/>
 							<Textarea
@@ -114,6 +115,7 @@ export default function page() {
 								placeholder="Customer Address"
 								className="resize-none col-span-2"
 								onChange={onCustomerDataInput}
+								autoComplete="off"
 							/>
 						</CardContent>
 					</Card>
