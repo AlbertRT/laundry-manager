@@ -62,8 +62,8 @@ export default function page() {
 			name: service?.name as string,
 			price: service?.price as number,
 			defaultPrice: service?.price as number,
-			quantity: 1,
 			unit: service?.unit as string,
+			quantity: 1,
 		};
 		setOrderCart((prev) => [...prev, cartItem]);
 	};

@@ -12,8 +12,9 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency, formatPhoneNumber } from "@/lib/formater";
 import { CustomerDataType, OrderCartType } from "@/types/types";
-import { IconMinus, IconPlus } from "@tabler/icons-react";
+import { IconLoader, IconMinus, IconPlus } from "@tabler/icons-react";
 import React, { useEffect, useState } from "react";
+import { useFormStatus } from "react-dom";
 
 type OrderPrevComp = {
 	order: OrderCartType[];
@@ -21,10 +22,12 @@ type OrderPrevComp = {
 };
 
 export default function OrderPreview({ order, customerData }: OrderPrevComp) {
-	const [orderCart, setOrderCart] = useState<OrderCartType[] | never[]>([]);
+	const [orderCart, setOrderCart] = useState<OrderCartType[]>(order);
 	const [totalPrice, setTotalPrice] = useState<number>(0);
 	useEffect(() => {
 		setOrderCart(order);
+
+		return () => setOrderCart([]);
 	}, [order]);
 	useEffect(() => {
 		setTotalPrice(
@@ -32,6 +35,8 @@ export default function OrderPreview({ order, customerData }: OrderPrevComp) {
 				return total + item.price;
 			}, 0)
 		);
+
+		return () => setTotalPrice(0);
 	}, [orderCart]);
 
 	const onQuantityChange = (
@@ -44,7 +49,6 @@ export default function OrderPreview({ order, customerData }: OrderPrevComp) {
 
 		const updatedOrderCart = [...orderCart];
 		const updatedItem = { ...updatedOrderCart[itemIndex] };
-		let price;
 
 		if (action === "increase") {
 			updatedItem.quantity++;
@@ -56,7 +60,6 @@ export default function OrderPreview({ order, customerData }: OrderPrevComp) {
 			updatedItem.quantity * orderCart[itemIndex].defaultPrice;
 
 		updatedOrderCart[itemIndex] = updatedItem;
-		console.log(updatedOrderCart);
 
 		setOrderCart(updatedOrderCart);
 	};
@@ -154,11 +157,31 @@ export default function OrderPreview({ order, customerData }: OrderPrevComp) {
 				</div>
 			</CardContent>
 			<CardFooter>
-				<Button className="w-full" onClick={onSubmit}>
-					Place Order (
-					{formatCurrency(totalPrice + (totalPrice * 10) / 100)})
-				</Button>
+				<PlaceOrderBtn
+					totalPrice={totalPrice + totalPrice * 0.1}
+					onSubmit={onSubmit}
+				/>
 			</CardFooter>
 		</Card>
+	);
+}
+
+function PlaceOrderBtn({
+	totalPrice,
+	onSubmit,
+}: {
+	totalPrice: number;
+	onSubmit: () => Promise<void>;
+}) {
+	const { pending } = useFormStatus();
+
+	return (
+		<Button className="w-full" onClick={onSubmit} disabled={pending}>
+			{!pending ? (
+				`Place Order (${formatCurrency(totalPrice)})`
+			) : (
+				<IconLoader className="animate-spin w-4 h-4" />
+			)}
+		</Button>
 	);
 }

@@ -21,14 +21,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-	HoverCard,
-	HoverCardContent,
-	HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import {
 	Card,
 	CardContent,
-	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
@@ -158,10 +152,8 @@ function DeleteData({ orderId }: { orderId: string }) {
 						Are you absolutely sure?
 					</AlertDialogTitle>
 					<AlertDialogDescription>
-						<p>
-							This action cannot be undone. This will permanently
-							delete this order data.
-						</p>
+						This action cannot be undone. This will permanently
+						delete this order data.
 						<Link
 							href={"/faq"}
 							className="text-black hover:underline"

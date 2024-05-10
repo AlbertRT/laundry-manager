@@ -106,16 +106,22 @@ export async function getOrderById(id: string) {
 export async function deleteOrderById(id: string) {
 	if (!id) throw new Error("ID Not found or not Valid!");
 
-	const data = await db.order.findUnique({ where: { id } });
-	if (!data)
-		throw new Error(`Data with id:${id} not found, please enter valid ID`);
+	try {
+		const data = await db.order.findUnique({ where: { id } });
+		if (!data)
+			throw new Error(
+				`Data with id:${id} not found, please enter valid ID`
+			);
 
-	if (isMoreThan48Hour(new Date(data.date)))
-		throw new Error(
-			"This data cannot be deleted because is more than 48 hour since the data where inputed to the database."
-		);
+		if (isMoreThan48Hour(new Date(data.date)))
+			throw new Error(
+				"This data cannot be deleted because is more than 48 hour since the data where inputed to the database."
+			);
 
-	const deletedData = await db.order.delete({ where: { id } });
+		const deletedData = await db.order.delete({ where: { id } });
+	} catch (error) {
+		console.log(error);
+	}
 
 	revalidatePath("/orders");
 	redirect("/orders", RedirectType.push);

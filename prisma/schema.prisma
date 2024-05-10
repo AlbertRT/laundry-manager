@@ -37,7 +37,7 @@ model Order {
 model OrderItem {
     id           String @id @default(uuid())
     order        Order  @relation(fields: [orderId], references: [id])
-    orderId      String
+    orderId      String @unique
     serviceId    String
     name         String
     price        Int

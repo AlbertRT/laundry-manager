@@ -17,16 +17,12 @@ export function formatString(str: string, maxLength: number): string {
 }
 
 export function formatPhoneNumber(phoneNumber: string): string {
-	const cleaned = phoneNumber.replace(/\D/g, "");
-
-	if (cleaned.length === 10) {
-		return cleaned.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
-	} else if (cleaned.length === 11) {
-		return cleaned.replace(
-			/(\d{2})(\d{3})(\d{4})(\d{2})/,
-			"+$1 ($2) $3-$4"
-		);
-	} else {
-		return "Phone number is not valid.";
+	if (phoneNumber.startsWith("021")) {
+		phoneNumber = phoneNumber.replace("021", "(021) ");
+	} else if (!phoneNumber.startsWith("0")) {
+		phoneNumber = "0" + phoneNumber;
 	}
+	return phoneNumber
+		.replace(/^0/, "+62 ")
+		.replace(/(\d{3})(\d{3,4})(\d{3})/, "$1-$2-$3");
 }
