@@ -54,3 +54,15 @@ export type CustomerDataType = {
 	phone: string;
 	address: string;
 };
+
+export interface MonthlySummary {
+	order: SummaryData;
+	income: SummaryData;
+	customers: SummaryData;
+}
+
+export interface SummaryData {
+	percentage: number;
+	isIncrease: boolean;
+	number: number;
+}

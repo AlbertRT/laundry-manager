@@ -47,12 +47,13 @@ model OrderItem {
 }
 
 model Customer {
-    id       String  @id @default(uuid())
+    id       String   @id @default(uuid())
     fullname String
-    email    String  @unique
-    phone    String  @unique
+    email    String   @unique
+    phone    String   @unique
     address  String
     orders   Order[]
+    date     DateTime @default(now())
 }
 
 model Service {

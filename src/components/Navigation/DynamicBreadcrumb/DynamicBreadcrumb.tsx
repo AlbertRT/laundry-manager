@@ -26,7 +26,7 @@ export default function DyanamicBreadcrumb() {
 			<BreadcrumbList>
 				<BreadcrumbItem>
 					<BreadcrumbLink asChild>
-						<Link href="/">Dashboard</Link>
+						<Link href="/">Studio</Link>
 					</BreadcrumbLink>
 				</BreadcrumbItem>
 				{pathnames.length >= 1 && <BreadcrumbSeparator />}
